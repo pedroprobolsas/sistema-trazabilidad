@@ -1,0 +1,349 @@
+<div class="container-fluid" id="service-orders">
+    <h1 class="h3 mb-4 text-gray-800">Órdenes de Servicio</h1>
+    
+    <!-- Add report button next to the title -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div></div>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="generateOrdersReport">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generar Reporte
+        </a>
+    </div>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Listado de Órdenes</h6>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newOrderModal">
+                <i class="fas fa-plus"></i> Nueva Orden
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Orden #</th>
+                            <th>Proveedor</th>
+                            <th>Producto</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Fecha Compromiso</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OS-20240115-0001</td>
+                            <td>Proveedor A</td>
+                            <td>Bolsa Transparente 20x30</td>
+                            <td>15/01/2024</td>
+                            <td>20/01/2024</td>
+                            <td><span class="badge bg-warning text-dark">Pendiente</span></td>
+                            <td>
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewOrderModal">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editOrderModal">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>OS-20240114-0002</td>
+                            <td>Proveedor B</td>
+                            <td>Bolsa Impresa 25x35</td>
+                            <td>14/01/2024</td>
+                            <td>19/01/2024</td>
+                            <td><span class="badge bg-success">Completada</span></td>
+                            <td>
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewOrderModal">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editOrderModal">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>OS-20240113-0003</td>
+                            <td>Proveedor C</td>
+                            <td>Bolsa Biodegradable 30x40</td>
+                            <td>13/01/2024</td>
+                            <td>18/01/2024</td>
+                            <td><span class="badge bg-warning text-dark">Pendiente</span></td>
+                            <td>
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewOrderModal">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editOrderModal">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Order Modal -->
+    <div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newOrderModalLabel">Nueva Orden de Servicio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newOrderForm" class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="orderProvider" class="form-label">Proveedor</label>
+                                <select class="form-select" id="orderProvider" required>
+                                    <option value="">Seleccionar proveedor</option>
+                                    <option value="1">Proveedor A</option>
+                                    <option value="2">Proveedor B</option>
+                                    <option value="3">Proveedor C</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un proveedor.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="orderProduct" class="form-label">Producto</label>
+                                <select class="form-select" id="orderProduct" required>
+                                    <option value="">Seleccionar producto</option>
+                                    <option value="1">Bolsa Transparente 20x30</option>
+                                    <option value="2">Bolsa Impresa 25x35</option>
+                                    <option value="3">Bolsa Biodegradable 30x40</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un producto.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="orderQuantity" class="form-label">Cantidad (kg)</label>
+                                <input type="number" class="form-control" id="orderQuantity" min="1" step="0.1" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingrese una cantidad válida.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="orderService" class="form-label">Tipo de Servicio</label>
+                                <select class="form-select" id="orderService" required>
+                                    <option value="">Seleccionar servicio</option>
+                                    <option value="impresion">Impresión</option>
+                                    <option value="laminado">Laminado</option>
+                                    <option value="corte">Corte</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un tipo de servicio.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="orderRequestDate" class="form-label">Fecha de Solicitud</label>
+                                <input type="date" class="form-control" id="orderRequestDate" required>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione una fecha de solicitud.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="orderDueDate" class="form-label">Fecha de Compromiso</label>
+                                <input type="date" class="form-control" id="orderDueDate" required>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione una fecha de compromiso.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="orderNotes" class="form-label">Notas</label>
+                            <textarea class="form-control" id="orderNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveOrderBtn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Order Modal -->
+    <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editOrderModalLabel">Editar Orden de Servicio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editOrderForm" class="needs-validation" novalidate>
+                        <input type="hidden" id="editOrderId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editOrderProvider" class="form-label">Proveedor</label>
+                                <select class="form-select" id="editOrderProvider" required>
+                                    <option value="">Seleccionar proveedor</option>
+                                    <option value="1">Proveedor A</option>
+                                    <option value="2">Proveedor B</option>
+                                    <option value="3">Proveedor C</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un proveedor.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editOrderProduct" class="form-label">Producto</label>
+                                <select class="form-select" id="editOrderProduct" required>
+                                    <option value="">Seleccionar producto</option>
+                                    <option value="1">Bolsa Transparente 20x30</option>
+                                    <option value="2">Bolsa Impresa 25x35</option>
+                                    <option value="3">Bolsa Biodegradable 30x40</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un producto.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editOrderQuantity" class="form-label">Cantidad (kg)</label>
+                                <input type="number" class="form-control" id="editOrderQuantity" min="1" step="0.1" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingrese una cantidad válida.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editOrderService" class="form-label">Tipo de Servicio</label>
+                                <select class="form-select" id="editOrderService" required>
+                                    <option value="">Seleccionar servicio</option>
+                                    <option value="impresion">Impresión</option>
+                                    <option value="laminado">Laminado</option>
+                                    <option value="corte">Corte</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un tipo de servicio.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="editOrderRequestDate" class="form-label">Fecha de Solicitud</label>
+                                <input type="date" class="form-control" id="editOrderRequestDate" required>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione una fecha de solicitud.
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="editOrderDueDate" class="form-label">Fecha de Compromiso</label>
+                                <input type="date" class="form-control" id="editOrderDueDate" required>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione una fecha de compromiso.
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="editOrderStatus" class="form-label">Estado</label>
+                                <select class="form-select" id="editOrderStatus" required>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
+                                    <option value="Completada">Completada</option>
+                                    <option value="Cancelada">Cancelada</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un estado.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editOrderNotes" class="form-label">Notas</label>
+                            <textarea class="form-control" id="editOrderNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="updateOrderBtn">Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Order Modal -->
+    <div class="modal fade" id="viewOrderModal" tabindex="-1" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewOrderModalLabel">Detalles de Orden de Servicio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Número de Orden:</h6>
+                            <p id="viewOrderNumber">OS-0001</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Estado:</h6>
+                            <p><span class="badge bg-warning text-dark" id="viewOrderStatus">Pendiente</span></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Proveedor:</h6>
+                            <p id="viewOrderProvider">Proveedor A</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Producto:</h6>
+                            <p id="viewOrderProduct">Bolsa Transparente 20x30</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <h6 class="fw-bold">Cantidad:</h6>
+                            <p id="viewOrderQuantity">100 kg</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="fw-bold">Tipo de Servicio:</h6>
+                            <p id="viewOrderService">Impresión</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="fw-bold">Fecha de Solicitud:</h6>
+                            <p id="viewOrderRequestDate">15/01/2024</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6 class="fw-bold">Fecha de Compromiso:</h6>
+                            <p id="viewOrderDueDate">20/01/2024</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="fw-bold">Notas:</h6>
+                            <p id="viewOrderNotes">-</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="printOrderBtn">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

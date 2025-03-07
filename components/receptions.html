@@ -1,0 +1,183 @@
+<div class="container-fluid" id="receptions">
+    <h1 class="h3 mb-4 text-gray-800">Recepciones de Material</h1>
+    
+    <!-- Add report button next to the title -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div></div>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="generateReceptionsReport">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generar Reporte
+        </a>
+    </div>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Listado de Recepciones</h6>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newReceptionModal">
+                <i class="fas fa-plus"></i> Nueva Recepción
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Recepción #</th>
+                            <th>Proveedor</th>
+                            <th>Producto</th>
+                            <th>Cantidad (kg)</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table content will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Reception Modal -->
+    <div class="modal fade" id="newReceptionModal" tabindex="-1" aria-labelledby="newReceptionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newReceptionModalLabel">Nueva Recepción de Material</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newReceptionForm" class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="receptionProvider" class="form-label">Proveedor</label>
+                                <select class="form-select" id="receptionProvider" required>
+                                    <option value="">Seleccionar proveedor</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un proveedor.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="receptionProduct" class="form-label">Producto</label>
+                                <select class="form-select" id="receptionProduct" required>
+                                    <option value="">Seleccionar producto</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un producto.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="receptionQuantity" class="form-label">Cantidad (kg)</label>
+                                <input type="number" class="form-control" id="receptionQuantity" min="1" step="0.1" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingrese una cantidad válida.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="receptionDate" class="form-label">Fecha de Recepción</label>
+                                <input type="date" class="form-control" id="receptionDate" required>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione una fecha.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="receptionQuality" class="form-label">Calidad</label>
+                                <select class="form-select" id="receptionQuality" required>
+                                    <option value="">Seleccionar calidad</option>
+                                    <option value="Excelente">Excelente</option>
+                                    <option value="Buena">Buena</option>
+                                    <option value="Regular">Regular</option>
+                                    <option value="Deficiente">Deficiente</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione la calidad.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="receptionStatus" class="form-label">Estado</label>
+                                <select class="form-select" id="receptionStatus" required>
+                                    <option value="">Seleccionar estado</option>
+                                    <option value="Recibido">Recibido</option>
+                                    <option value="En revisión">En revisión</option>
+                                    <option value="Aprobado">Aprobado</option>
+                                    <option value="Rechazado">Rechazado</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione el estado.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="receptionNotes" class="form-label">Notas</label>
+                            <textarea class="form-control" id="receptionNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveReceptionBtn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Reception Modal -->
+    <div class="modal fade" id="viewReceptionModal" tabindex="-1" aria-labelledby="viewReceptionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewReceptionModalLabel">Detalles de Recepción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <h5 id="viewReceptionNumber" class="mb-0">REC-0000</h5>
+                        <span id="viewReceptionStatus" class="badge bg-info">Estado</span>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Proveedor</p>
+                            <p id="viewReceptionProvider" class="fw-bold">Nombre del proveedor</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Producto</p>
+                            <p id="viewReceptionProduct" class="fw-bold">Nombre del producto</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Cantidad</p>
+                            <p id="viewReceptionQuantity" class="fw-bold">0 kg</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Fecha de Recepción</p>
+                            <p id="viewReceptionDate" class="fw-bold">01/01/2023</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Calidad</p>
+                            <p id="viewReceptionQuality" class="fw-bold">Buena</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <p class="mb-1 text-muted">Notas</p>
+                        <p id="viewReceptionNotes">-</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="printReceptionBtn">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

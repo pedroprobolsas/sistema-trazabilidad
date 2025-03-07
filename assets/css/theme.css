@@ -1,0 +1,22 @@
+/* Theme transition */
+:root {
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Dark theme overrides */
+[data-bs-theme="dark"] {
+    --bs-body-bg: #212529;
+    --bs-body-color: #f8f9fa;
+    --bs-card-bg: #343a40;
+    --bs-border-color: #495057;
+}
+
+/* Theme toggle button styles */
+#themeToggle {
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+#themeIcon {
+    font-size: 1.2rem;
+}
