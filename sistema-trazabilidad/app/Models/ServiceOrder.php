@@ -28,12 +28,27 @@ class ServiceOrder extends Model
     public static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($order) {
             $lastOrder = self::orderBy('id', 'desc')->first();
             $nextNumber = $lastOrder ? intval(substr($lastOrder->order_number, 3)) + 1 : 1001;
             $order->order_number = 'OS-' . $nextNumber;
         });
+    }
+
+    public function serviceType()
+    {
+        return $this->belongsTo(ServiceType::class);
+    }
+
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 
     public function reception()

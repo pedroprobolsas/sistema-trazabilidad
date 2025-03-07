@@ -56,7 +56,7 @@ class ServiceOrderController extends Controller
         return view('service_orders.show', compact('serviceOrder'));
     }
 
-    public function printOrder(ServiceOrder $serviceOrder)
+    public function print(ServiceOrder $serviceOrder)
     {
         $pdf = PDF::loadView('service_orders.print', compact('serviceOrder'));
         return $pdf->download('service-order-'.$serviceOrder->order_number.'.pdf');
