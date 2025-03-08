@@ -30,3 +30,6 @@ Route::post('/service-orders/{serviceOrder}/reception', [ServiceReceptionControl
 Route::resource('service-types', ServiceTypeController::class);
 Route::resource('providers', ProviderController::class);
 Route::resource('products', ProductController::class);
+
+Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+Route::get('/reports/generate', [ReportsController::class, 'generate'])->name('reports.generate');

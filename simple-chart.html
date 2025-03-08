@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chart.js Test</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .chart-container {
+            width: 400px;
+            height: 400px;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+        <div id="status"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusDiv = document.getElementById('status');
+            
+            // Verificar que Chart.js esté cargado
+            if (typeof Chart === 'undefined') {
+                statusDiv.innerHTML = '<p style="color: red;">Error: Chart.js no está cargado correctamente</p>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<p style="color: green;">Chart.js cargado correctamente, versión: ' + Chart.version + '</p>';
+            
+            // Obtener el contexto del canvas
+            const ctx = document.getElementById('myChart');
+            
+            if (!ctx) {
+                statusDiv.innerHTML += '<p style="color: red;">Error: No se encontró el elemento canvas</p>';
+                return;
+            }
+            
+            statusDiv.innerHTML += '<p style="color: green;">Canvas encontrado</p>';
+            
+            try {
+                // Datos para el gráfico
+                const data = {
+                    labels: ['Entradas', 'Desechos', 'Diferencia'],
+                    datasets: [{
+                        data: [2511.75, 57.75, 30.50],
+                        backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b']
+                    }]
+                };
+                
+                // Configuración del gráfico
+                const config = {
+                    type: 'doughnut',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                };
+                
+                // Crear el gráfico
+                const myChart = new Chart(ctx, config);
+                
+                statusDiv.innerHTML += '<p style="color: green;">Gráfico creado correctamente</p>';
+            } catch (error) {
+                statusDiv.innerHTML += '<p style="color: red;">Error al crear el gráfico: ' + error.message + '</p>';
+                console.error('Error completo:', error);
+            }
+        });
+    </script>
+</body>
+</html>

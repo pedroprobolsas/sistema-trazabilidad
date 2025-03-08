@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Chart.js</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .chart-container {
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de Chart.js</h1>
+    
+    <div class="chart-container">
+        <canvas id="testChart"></canvas>
+    </div>
+    
+    <div id="status"></div>
+    
+    <!-- Cargar Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusDiv = document.getElementById('status');
+            
+            // Verificar que Chart.js esté cargado
+            if (typeof Chart === 'undefined') {
+                statusDiv.innerHTML = '<p style="color: red;">Error: Chart.js no está cargado correctamente</p>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<p style="color: green;">Chart.js cargado correctamente, versión: ' + Chart.version + '</p>';
+            
+            // Obtener el contexto del canvas
+            const ctx = document.getElementById('testChart');
+            
+            if (!ctx) {
+                statusDiv.innerHTML += '<p style="color: red;">Error: No se encontró el elemento canvas</p>';
+                return;
+            }
+            
+            statusDiv.innerHTML += '<p style="color: green;">Canvas encontrado</p>';
+            
+            try {
+                // Crear un gráfico simple
+                const myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Rojo', 'Azul', 'Amarillo'],
+                        datasets: [{
+                            label: 'Colores',
+                            data: [300, 50, 100],
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(54, 162, 235)',
+                                'rgb(255, 205, 86)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+                
+                statusDiv.innerHTML += '<p style="color: green;">Gráfico creado correctamente</p>';
+            } catch (error) {
+                statusDiv.innerHTML += '<p style="color: red;">Error al crear el gráfico: ' + error.message + '</p>';
+                console.error('Error completo:', error);
+            }
+        });
+    </script>
+</body>
+</html>

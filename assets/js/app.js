@@ -83,7 +83,7 @@ function setupOrderModalListeners() {
                 };
                 
                 // Send data to Laravel backend
-                fetch('http://localhost/api/orders', {
+    fetch('http://localhost:8000/api/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -206,7 +206,7 @@ function setupOrderModalListeners() {
 }
 // Function to load orders data from API
 function loadOrdersData() {
-    fetch('http://localhost/api/orders')
+    fetch('http://localhost:8000/api/orders')
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector('#service-orders table tbody');
@@ -292,7 +292,7 @@ function showAlert(message, type = 'info') {
 }
 // Function to view order details
 function viewOrderDetails(orderId) {
-    fetch(`http://localhost/api/orders/${orderId}`)
+    fetch(`http://localhost:8000/api/orders/${orderId}`)
         .then(response => response.json())
         .then(order => {
             // Update modal fields with order data
@@ -472,15 +472,41 @@ function setupOrderButtonListeners() {
 }
 // Function to set up reception modal listeners
 function setupReceptionModalListeners() {
-    // Load providers and products for dropdowns
-    loadProvidersForDropdown('receptionProvider');
-    loadProductsForDropdown('receptionProduct');
+    // Load service orders for dropdown
+    loadServiceOrdersForDropdown();
     
     // Set default reception date to today
     const receptionDateInput = document.querySelector('#receptionDate');
     if (receptionDateInput) {
         const today = new Date().toISOString().split('T')[0];
         receptionDateInput.value = today;
+    }
+    
+    // Add event listener for service order selection
+    const serviceOrderSelect = document.querySelector('#receptionServiceOrder');
+    if (serviceOrderSelect) {
+        serviceOrderSelect.addEventListener('change', function() {
+            if (this.value) {
+                // Get service order details and populate provider and product fields
+                fetch(`http://localhost:8000/api/orders/${this.value}`)
+                    .then(response => response.json())
+                    .then(order => {
+                        const providerSelect = document.querySelector('#receptionProvider');
+                        const productSelect = document.querySelector('#receptionProduct');
+                        
+                        if (providerSelect) {
+                            providerSelect.value = order.provider_id;
+                        }
+                        
+                        if (productSelect) {
+                            productSelect.value = order.product_id;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading order details:', error);
+                    });
+            }
+        });
     }
     
     // New reception form submission
@@ -491,17 +517,26 @@ function setupReceptionModalListeners() {
             if (form.checkValidity()) {
                 // Collect form data
                 const formData = {
-                    provider_id: document.querySelector('#receptionProvider').value,
-                    product_id: document.querySelector('#receptionProduct').value,
-                    quantity: document.querySelector('#receptionQuantity').value,
+                    service_order_id: document.querySelector('#receptionServiceOrder').value,
+                    received_quantity_kg: document.querySelector('#receptionQuantity').value,
                     reception_date: document.querySelector('#receptionDate').value,
                     quality: document.querySelector('#receptionQuality').value,
                     status: document.querySelector('#receptionStatus').value,
-                    notes: document.querySelector('#receptionNotes').value
+                    notes: document.querySelector('#receptionNotes').value,
+                    // Add required fields with default values
+                    received_quantity_units: 0,
+                    scrap_quantity_kg: 0,
+                    scrap_quantity_units: 0,
+                    pickup_vehicle_plate: 'N/A',
+                    pickup_driver_name: 'N/A',
+                    pickup_driver_id: 'N/A',
+                    delivered_by: 1
                 };
                 
+                console.log('Sending reception data:', formData);
+                
                 // Send data to Laravel backend
-                fetch('http://localhost/api/receptions', {
+                fetch('http://localhost:8000/api/receptions', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -510,8 +545,13 @@ function setupReceptionModalListeners() {
                     },
                     body: JSON.stringify(formData)
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Response data:', data);
+                    
                     // Close the modal
                     const modal = bootstrap.Modal.getInstance(document.querySelector('#newReceptionModal'));
                     modal.hide();
@@ -540,7 +580,7 @@ function setupReceptionModalListeners() {
 
 // Function to load receptions data from API
 function loadReceptionsData() {
-    fetch('http://localhost/api/receptions')
+    fetch('http://localhost:8000/api/receptions')
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector('#receptions table tbody');
@@ -556,9 +596,10 @@ function loadReceptionsData() {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>REC-${reception.id.toString().padStart(4, '0')}</td>
+                    <td>${reception.service_order_number || 'N/A'}</td>
                     <td>${reception.provider_name}</td>
                     <td>${reception.product_name}</td>
-                    <td>${reception.quantity} kg</td>
+                    <td>${reception.received_quantity_kg} kg</td>
                     <td>${formatDate(reception.reception_date)}</td>
                     <td><span class="badge ${statusClass}">${reception.status}</span></td>
                     <td>
@@ -651,9 +692,10 @@ function viewReceptionDetails(receptionId) {
             document.getElementById('viewReceptionNumber').textContent = `REC-${reception.id.toString().padStart(4, '0')}`;
             document.getElementById('viewReceptionStatus').textContent = reception.status;
             document.getElementById('viewReceptionStatus').className = `badge ${getReceptionStatusClass(reception.status)}`;
+            document.getElementById('viewReceptionServiceOrder').textContent = reception.service_order_number || 'N/A';
             document.getElementById('viewReceptionProvider').textContent = reception.provider_name;
             document.getElementById('viewReceptionProduct').textContent = reception.product_name;
-            document.getElementById('viewReceptionQuantity').textContent = `${reception.quantity} kg`;
+            document.getElementById('viewReceptionQuantity').textContent = `${reception.received_quantity_kg} kg`;
             document.getElementById('viewReceptionDate').textContent = formatDate(reception.reception_date);
             document.getElementById('viewReceptionQuality').textContent = reception.quality;
             document.getElementById('viewReceptionNotes').textContent = reception.notes || '-';
@@ -703,6 +745,7 @@ function generateReceptionsReport() {
                                 <thead>
                                     <tr>
                                         <th>Recepción #</th>
+                                        <th>Orden #</th>
                                         <th>Proveedor</th>
                                         <th>Producto</th>
                                         <th>Cantidad (kg)</th>
@@ -719,9 +762,10 @@ function generateReceptionsReport() {
                 reportContent += `
                     <tr>
                         <td>REC-${reception.id.toString().padStart(4, '0')}</td>
+                        <td>${reception.service_order_number || 'N/A'}</td>
                         <td>${reception.provider_name}</td>
                         <td>${reception.product_name}</td>
-                        <td>${reception.quantity} kg</td>
+                        <td>${reception.received_quantity_kg} kg</td>
                         <td>${formatDate(reception.reception_date)}</td>
                         <td>${reception.quality}</td>
                         <td>${reception.status}</td>
@@ -806,6 +850,39 @@ function loadProductsForDropdown(elementId = 'orderProduct') {
         })
         .catch(error => {
             console.error('Error loading products:', error);
+            // Fallback to static options if API fails
+        });
+}
+
+// Function to load service orders for dropdown
+function loadServiceOrdersForDropdown(elementId = 'receptionServiceOrder') {
+    const orderSelect = document.querySelector(`#${elementId}`);
+    if (!orderSelect) return;
+    
+    fetch('http://localhost/api/orders')
+        .then(response => response.json())
+        .then(orders => {
+            // Clear existing options except the first one
+            while (orderSelect.options.length > 1) {
+                orderSelect.remove(1);
+            }
+            
+            // Filter orders that are pending or in process
+            const availableOrders = orders.filter(order => 
+                order.status.toLowerCase() === 'pendiente' || 
+                order.status.toLowerCase() === 'en proceso'
+            );
+            
+            // Add new options
+            availableOrders.forEach(order => {
+                const option = document.createElement('option');
+                option.value = order.id;
+                option.textContent = `OS-${order.id.toString().padStart(4, '0')} - ${order.product_name} (${order.provider_name})`;
+                orderSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading service orders:', error);
             // Fallback to static options if API fails
         });
 }

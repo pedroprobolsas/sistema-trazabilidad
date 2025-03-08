@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reception API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #console {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 1rem;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .log-info { color: #0d6efd; }
+        .log-success { color: #198754; }
+        .log-error { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Test Reception API</h1>
+        <p class="lead">This page tests the connection to the database and the ability to insert reception data.</p>
+        
+        <div class="row mb-3">
+            <div class="col">
+                <div class="form-group">
+                    <label for="apiUrl">API Base URL:</label>
+                    <input type="text" id="apiUrl" class="form-control" value="http://localhost:8000" />
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="serviceOrderId">Service Order ID:</label>
+                    <input type="number" id="serviceOrderId" class="form-control" value="1" min="1" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <button id="testGetBtn" class="btn btn-primary me-2">Test GET Receptions</button>
+            <button id="testPostBtn" class="btn btn-success">Test POST Reception</button>
+            <button id="clearConsoleBtn" class="btn btn-secondary float-end">Clear Console</button>
+        </div>
+        
+        <div id="console" class="mb-3"></div>
+    </div>
+    
+    <script>
+        // Console logging functions
+        const consoleElement = document.getElementById('console');
+        
+        function logToConsole(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-${type}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            consoleElement.appendChild(logEntry);
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+        }
+        
+        // Override console methods to also log to our UI
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        
+        console.log = function() {
+            originalConsoleLog.apply(console, arguments);
+            logToConsole(Array.from(arguments).join(' '), 'info');
+        };
+        
+        console.error = function() {
+            originalConsoleError.apply(console, arguments);
+            logToConsole(Array.from(arguments).join(' '), 'error');
+        };
+        
+        // Test functions
+        async function testGetReceptions() {
+            const apiBaseUrl = document.getElementById('apiUrl').value;
+            
+            console.log('Testing GET /api/receptions...');
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/receptions`);
+                
+                if (!response.ok) {
+                    throw new Error(`GET request failed with status ${response.status}`);
+                }
+                
+                const receptions = await response.json();
+                console.log(`Successfully retrieved ${receptions.length} receptions`);
+                logToConsole(`First 3 receptions: ${JSON.stringify(receptions.slice(0, 3), null, 2)}`, 'success');
+                
+                return true;
+            } catch (error) {
+                console.error('GET API test failed:', error.message);
+                
+                if (error.message.includes('Failed to fetch')) {
+                    console.error('Make sure the Laravel server is running on the specified URL');
+                    console.error('You can start it with: cd sistema-trazabilidad && php artisan serve');
+                }
+                
+                return false;
+            }
+        }
+        
+        async function testPostReception() {
+            const apiBaseUrl = document.getElementById('apiUrl').value;
+            const serviceOrderId = parseInt(document.getElementById('serviceOrderId').value);
+            
+            // Test data for a new reception
+            const receptionData = {
+                service_order_id: serviceOrderId,
+                reception_date: new Date().toISOString().split('T')[0],
+                received_quantity_kg: 100,
+                status: 'Recibido',
+                notes: 'Test reception from API validation page',
+                quality: 'Buena',
+                // Required fields with default values
+                received_quantity_units: 0,
+                scrap_quantity_kg: 0,
+                scrap_quantity_units: 0,
+                pickup_vehicle_plate: 'TEST123',
+                pickup_driver_name: 'Test Driver',
+                pickup_driver_id: '12345678',
+                delivered_by: 1
+            };
+            
+            console.log('Testing POST /api/receptions...');
+            console.log('Sending data:', JSON.stringify(receptionData, null, 2));
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/receptions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(receptionData)
+                });
+                
+                const responseData = await response.json();
+                
+                if (!response.ok) {
+                    console.error('Error response:', responseData);
+                    throw new Error(`POST request failed with status ${response.status}`);
+                }
+                
+                console.log('Successfully created reception:', responseData);
+                logToConsole('Database connection and data insertion validated successfully!', 'success');
+                
+                return true;
+            } catch (error) {
+                console.error('POST API test failed:', error.message);
+                
+                if (error.message.includes('Failed to fetch')) {
+                    console.error('Make sure the Laravel server is running on the specified URL');
+                    console.error('You can start it with: cd sistema-trazabilidad && php artisan serve');
+                }
+                
+                return false;
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('testGetBtn').addEventListener('click', testGetReceptions);
+        document.getElementById('testPostBtn').addEventListener('click', testPostReception);
+        document.getElementById('clearConsoleBtn').addEventListener('click', () => {
+            consoleElement.innerHTML = '';
+        });
+        
+        // Initial message
+        logToConsole('Ready to test the Reception API. Click one of the buttons above to start.', 'info');
+    </script>
+</body>
+</html>

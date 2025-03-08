@@ -22,6 +22,7 @@
                     <thead>
                         <tr>
                             <th>Recepción #</th>
+                            <th>Orden #</th>
                             <th>Proveedor</th>
                             <th>Producto</th>
                             <th>Cantidad (kg)</th>
@@ -49,9 +50,20 @@
                 <div class="modal-body">
                     <form id="newReceptionForm" class="needs-validation" novalidate>
                         <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="receptionServiceOrder" class="form-label">Orden de Servicio</label>
+                                <select class="form-select" id="receptionServiceOrder" required>
+                                    <option value="">Seleccionar orden de servicio</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor seleccione una orden de servicio.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="receptionProvider" class="form-label">Proveedor</label>
-                                <select class="form-select" id="receptionProvider" required>
+                                <select class="form-select" id="receptionProvider" disabled>
                                     <option value="">Seleccionar proveedor</option>
                                 </select>
                                 <div class="invalid-feedback">
@@ -60,7 +72,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="receptionProduct" class="form-label">Producto</label>
-                                <select class="form-select" id="receptionProduct" required>
+                                <select class="form-select" id="receptionProduct" disabled>
                                     <option value="">Seleccionar producto</option>
                                 </select>
                                 <div class="invalid-feedback">
@@ -140,6 +152,12 @@
                         <span id="viewReceptionStatus" class="badge bg-info">Estado</span>
                     </div>
                     <hr>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Orden de Servicio</p>
+                            <p id="viewReceptionServiceOrder" class="fw-bold">OS-0000</p>
+                        </div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <p class="mb-1 text-muted">Proveedor</p>
